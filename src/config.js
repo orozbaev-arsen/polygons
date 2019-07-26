@@ -5,7 +5,7 @@ const config = {
   },
   app: {
     port: 3000,
-    upload_dir: './files/{username}',
+    upload_dir: './files/{username}/',
   },
   auth: {
     token: 'grG8%4@ghjjtj_654)54&??gfd4!!43VF',

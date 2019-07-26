@@ -1,6 +1,7 @@
 // system libraries
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 
 // packages
 const express = require('express');
@@ -54,7 +55,11 @@ class Server {
     const storage = multer.diskStorage({
       destination: (req, file, cb) => {
         const username = req.user ? req.user.username : 'unknown';
-        cb(null, this.config.app.upload_dir.replace('{username}', username));
+        const dir = this.config.app.upload_dir.replace('{username}', username);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
       },
       filename: (req, file, cb) => {
         let ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
