@@ -1,0 +1,58 @@
+doctype html
+html(lang='ru')
+  head
+    meta(charset='UTF-8')
+    title Index
+    link(href="/styles/main.css" rel="stylesheet" type="text/css")
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+    script.
+      if ('#{token}') {
+        localStorage.setItem('authToken', '#{token}');
+      }
+  body
+    #app
+      .container-fluid
+        .row
+          .col-3.p-0.files-container
+            .card
+              .card-header Список файлов
+              .files-list-container.card-body
+                .list-group
+                  .file-title.list-group-item(
+                    v-for="fileTitle in files",
+                    @click="changeCurrentFile(fileTitle)",
+                    :class="{active: fileTitle === currentTitle}"
+                  ) {{ fileTitle }}
+              .upload-file-container.card-footer
+                input(ref="newFile" type="file" v-if="uploadReady" title="Добавить файл" @input="sendNewFile")
+                .upload-error(v-if="uploadError") {{ uploadErrorReason }}
+          .col-9.file-content-container(v-if='currentFile.length === 0')
+            .alert.alert-warning.mt-3 Выберите файл или загрузите новый
+          .col-9.file-content-container(v-else)
+            .h3.mb-3.files-title
+              | Список точек&nbsp;
+              span.file-status (Статус файла: {{ fileStatus }})
+            select.filter-overlap.form-control(ref="filter" @change="changePagesFilter()")
+              option(value="all") Все
+              option(value="include") Вошедшие
+              option(value="not-include") Не вошедшие
+            table.mt-3.files-coords-list.table.table-stripe.table-hover
+              thead
+                tr.bg-info
+                  th Координаты
+                  th Описание
+                  th Совпадения
+              tbody(v-if="currentFile && !fileError && !fileLoading")
+                tr(v-for="currentRow in placesList")
+                  td.files-content-coords {{ `${currentRow.coords.longitude}, ${currentRow.coords.latitude}`}}
+                  td.files-content-place(@click="check(currentRow)") {{ currentRow.place }}
+                  td.files-content-overlap
+                    .files-content-overlap-icon(:class="currentRow.overlap ? 'positive' : 'negative'")
+            .files-overlap-total Всего вхождений в файле: {{ overlapCount }}
+            .file-content-loading(v-if="fileLoading")
+              .loading-spinner
+              .loading-description Идёт загрузка файла...
+            .file-error(v-if="fileError") {{ fileError }}
+  script(src="/scripts/library/axios.js")
+  script(src="/scripts/library/vue.js")
+  script(src="/scripts/vue-client.js")

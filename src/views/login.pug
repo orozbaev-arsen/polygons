@@ -1,0 +1,21 @@
+doctype html
+html(lang='ru')
+  head
+    meta(charset='UTF-8')
+    title Test
+    link(href="/styles/login.css" rel="stylesheet" type="text/css")
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+  body
+    .container.text-center
+      h1.h3.mb-3.font-weight-normal Please sign in
+      div.row
+        form.form.form-signin(action='/api/auth/signin', method='post')
+          div.form-group
+            label(for='username') Username:
+            input.form-control(type='text', id='username', name='username', required)
+            br
+          div.form-group
+            label(for='password') Password:
+            input.form-control(type='password', id='password', name='password', required)
+          div.form-group
+            input.btn.btn-primary.btn-lg.btn-block(type='submit', value='Login')
